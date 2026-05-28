@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Company Dashboard - FTMS</title>
+    <script src="auth.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-image: url("just.jpeg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        .container {
+            width: 900px;
+            height: 600px;
+            margin: 60px auto;
+            display: flex;
+            border-radius: 15px;
+            overflow: hidden;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(5px);
+        }
+
+        .left {
+            width: 50%;
+            background: linear-gradient(to bottom, #2c3e8f, #1abc9c);
+            color: white;
+            text-align: center;
+            padding-top: 40px;
+        }
+
+        .logo {
+            width: 180px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+
+        .right {
+            width: 50%;
+            background: white;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .right input, .right select, .right textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .right textarea {
+            resize: vertical;
+            height: 80px;
+            font-family: Arial;
+        }
+
+        .right button {
+            width: 100%;
+            padding: 10px;
+            background: #2c3e8f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        p {
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            margin-top: 10px;
+            display: block;
+        }
+
+        .profile-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: #1abc9c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .profile-card {
+            display: none;
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+            text-align: center;
+            z-index: 100;
+        }
+
+        .profile-card h3 {
+            margin: 0 0 10px 0;
+            color: #2c3e8f;
+        }
+
+        .profile-card p {
+            margin: 0 0 15px 0;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .profile-card button {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .error-msg {
+            color: red;
+            font-size: 12px;
+            margin-top: -5px;
+            margin-bottom: 8px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<button class="profile-btn" onclick="toggleProfile()">My Profile</button>
+<div class="profile-card" id="profileCard">
+    <h3 id="profileName">Loading...</h3>
+    <p id="profileSpecialization"></p>
+    <button onclick="logout()">Logout</button>
+</div>
+
+<div class="container">
+    <div class="left">
+        <img src="FTMS.jpeg" class="logo">
+        <h1>Welcome to FTMS</h1>
+        <p>Field Training Management System</p>
+    </div>
+
+    <div class="right">
+
+        <h2>Company Dashboard</h2>
+
+        <form id="internshipForm" onsubmit="publishInternship(event)">
+            <label>Internship Title</label>
+            <input type="text" id="internship_title" placeholder="Enter Internship Title" required>
+            <div class="error-msg" id="titleError"></div>
+
+            <label>Internship Description</label>
+            <textarea id="internship_description" placeholder="Enter Internship Description" required></textarea>
+            <div class="error-msg" id="descriptionError"></div>
+
+            <label>Students Required</label>
+            <input type="number" id="students_required" placeholder="Number of Students" required>
+            <div class="error-msg" id="studentsError"></div>
+
+            <label>Training Start Date</label>
+            <input type="date" id="training_start_date" required onchange="calculateDuration()">
+            <div class="error-msg" id="startDateError"></div>
+
+            <label>Training End Date (Deadline)</label>
+            <input type="date" id="training_end_date" required onchange="calculateDuration()">
+            <div class="error-msg" id="endDateError"></div>
+
+            <label>Training Duration</label>
+            <input type="text" id="training_duration_months" placeholder="Auto-calculated" readonly>
+
+            <label>Category</label>
+            <select id="category" required>
+                <option value="">Loading categories...</option>
+            </select>
+            <div class="error-msg" id="categoryError"></div>
+
+            <label>Location</label>
+            <input type="text" id="location" placeholder="Enter Location" required>
+            <div class="error-msg" id="locationError"></div>
+
+            <button type="submit">Publish Internship</button>
+        </form>
+
+    </div>
+</div>
+
+<script>
+window.onload = function() {
+    fetchProfile();
+    fetch("http://localhost:3000/categories")
+    .then(res => res.json())
+    .then(data => {
+        const categorySelect = document.getElementById("category");
+        categorySelect.innerHTML = '<option value="">Select Category</option>';
+        data.forEach(cat => {
+            const option = document.createElement("option");
+            option.value = cat.category_name;
+            option.innerText = cat.category_name;
+            categorySelect.appendChild(option);
+        });
+    })
+    .catch(err => {
+        console.error("Error fetching categories:", err);
+        document.getElementById("category").innerHTML = '<option value="">Failed to load categories</option>';
+    });
+};
+
+function toggleProfile() {
+    const card = document.getElementById("profileCard");
+    card.style.display = card.style.display === "block" ? "none" : "block";
+}
+
+
+function fetchProfile() {
+    const userId = localStorage.getItem("user_id");
+    if (!userId) return;
+    fetch("http://localhost:3000/company-profile/" + userId)
+    .then(res => res.json())
+    .then(data => {
+        if(data.company_name) {
+            document.getElementById("profileName").innerText = data.company_name;
+            document.getElementById("profileSpecialization").innerText = data.specialization;
+        }
+    })
+    .catch(err => console.error("Error fetching profile", err));
+}
+
+function calculateDuration() {
+    const startStr = document.getElementById("training_start_date").value;
+    const endStr = document.getElementById("training_end_date").value;
+    if (!startStr || !endStr) return;
+    
+    const start = new Date(startStr);
+    const end = new Date(endStr);
+    
+    if (end <= start) {
+        document.getElementById("training_duration_months").value = "";
+        return;
+    }
+    
+    let months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+    let days = end.getDate() - start.getDate();
+    
+    if (days < 0) {
+        months--;
+        const previousMonth = new Date(end.getFullYear(), end.getMonth(), 0);
+        days += previousMonth.getDate();
+    }
+    
+    let result = "";
+    if (months > 0) result += months + (months === 1 ? " month" : " months");
+    if (days > 0) {
+        if (months > 0) result += " and ";
+        result += days + (days === 1 ? " day" : " days");
+    }
+    
+    document.getElementById("training_duration_months").value = result || "0 days";
+}
+function publishInternship(event) {
+    if (event) event.preventDefault();
+
+    var internship_title = document.getElementById("internship_title").value.trim();
+    var internship_description = document.getElementById("internship_description").value.trim();
+    var students_required = document.getElementById("students_required").value.trim();
+    var training_start_date = document.getElementById("training_start_date").value;
+    var training_end_date = document.getElementById("training_end_date").value;
+    var training_duration_months = document.getElementById("training_duration_months").value;
+    var category = document.getElementById("category").value;
+    var location = document.getElementById("location").value.trim();
+
+    var user_id = localStorage.getItem("user_id");
+    if (!user_id) {
+        alert("Please login first");
+        return;
+    }
+
+    document.querySelectorAll('.error-msg').forEach(el => el.style.display = 'none');
+    let hasError = false;
+
+    function showError(id, msg) {
+        let el = document.getElementById(id);
+        if (el) {
+            el.innerText = msg;
+            el.style.display = 'block';
+        }
+    }
+
+    if (!/^[a-zA-Z\s]+$/.test(internship_title)) {
+        showError("titleError", "Internship Title must contain letters only");
+        hasError = true;
+    }
+
+    if (!/[a-zA-Z]/.test(internship_description) || internship_description.length < 50) {
+        showError("descriptionError", "Internship Description must contain letters and be at least 50 characters long");
+        hasError = true;
+    }
+
+    const numStudents = parseInt(students_required);
+    if (isNaN(numStudents) || numStudents < 1 || numStudents > 100) {
+        showError("studentsError", "Students Required must be a number between 1 and 100");
+        hasError = true;
+    }
+
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const start = new Date(training_start_date);
+    start.setHours(0,0,0,0);
+    const oneMonthAhead = new Date(today);
+    oneMonthAhead.setMonth(today.getMonth() + 1);
+
+    if (!training_start_date) {
+        showError("startDateError", "Training Start Date is required");
+        hasError = true;
+    } else if (start < today) {
+        showError("startDateError", "Training Start Date cannot be in the past");
+        hasError = true;
+    } else if (start > oneMonthAhead) {
+        showError("startDateError", "Training Start Date cannot be more than 1 month ahead");
+        hasError = true;
+    }
+
+    const end = new Date(training_end_date);
+    end.setHours(0,0,0,0);
+    if (!training_end_date) {
+        showError("endDateError", "Training End Date is required");
+        hasError = true;
+    } else if (end <= start) {
+        showError("endDateError", "Training End Date must be after Start Date");
+        hasError = true;
+    } else {
+        const maxEnd = new Date(start);
+        maxEnd.setMonth(start.getMonth() + 4);
+        if (end > maxEnd) {
+            showError("endDateError", "Maximum allowed duration is 4 months");
+            hasError = true;
+        }
+    }
+
+    if (!/^[a-zA-Z\s]+$/.test(location)) {
+        showError("locationError", "Location must contain letters only");
+        hasError = true;
+    }
+
+    if (hasError) return;
+
+    var payload = {
+        internship_title: internship_title,
+        internship_description: internship_description,
+        students_required: students_required,
+        training_duration_months: training_duration_months,
+        training_start_date: training_start_date,
+        training_end_date: training_end_date,
+        category: category,
+        location: location,
+        user_id: user_id
+    };
+    console.log("Sending payload:", payload);
+
+    fetch("http://localhost:3000/add-internship", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(function(res) {
+        if (!res.ok) {
+            throw new Error("Server error");
+        }
+        return res.json();
+    })
+    .then(function(data) {
+        alert(data.message);
+        document.getElementById("internshipForm").reset();
+    })
+    .catch(function(error) {
+        console.error("Error:", error);
+        alert("Failed to publish internship");
+    });
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Student Dashboard</title>
+    <script src="auth.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-image: url("just.jpeg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        .container {
+            width: 1200px;
+            height: 750px;
+            margin: 20px auto;
+            display: flex;
+            border-radius: 15px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 25px rgba(0,0,0,0.15);
+        }
+
+        .left {
+            width: 25%;
+            background: linear-gradient(to bottom, #2c3e8f, #1abc9c);
+            color: white;
+            text-align: center;
+            padding-top: 50px;
+        }
+
+        .logo {
+            width: 160px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .left h1 {
+            font-size: 36px;
+            margin: 10px 0;
+        }
+
+        .left p {
+            font-size: 16px;
+            padding: 0 10px;
+        }
+
+        .right {
+            width: 75%;
+            background: white;
+            padding: 40px;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        h2 {
+            color: #2c3e8f;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .select-dept-label {
+            font-weight: bold;
+            font-size: 16px;
+            display: block;
+            margin-bottom: 20px;
+            text-align: left;
+            color: #222;
+        }
+
+        .departments-grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .dept-card {
+            background: #fff;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 15px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 125px;
+            box-sizing: border-box;
+        }
+
+        .dept-card:hover {
+            border-color: #1abc9c;
+            background: #f4fcfb;
+            box-shadow: 0 4px 12px rgba(26, 188, 156, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .dept-card img {
+            width: 45px;
+            height: 45px;
+            margin-bottom: 10px;
+            object-fit: contain;
+        }
+
+        .dept-card h4 {
+            margin: 0;
+            color: #2c3e8f;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .post-count {
+            font-size: 12px;
+            color: gray;
+            margin-top: 5px;
+            font-weight: normal;
+        }
+
+        /* تنسيق كرت عرض تفاصيل الشركة وزر العودة */
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #1abc9c;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            color: #2c3e8f;
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 20px;
+            text-align: left;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .card h3 {
+            color: #2c3e8f;
+            margin-top: 0;
+            font-size: 22px;
+            margin-bottom: 15px;
+            border-bottom: 1px dashed #ddd;
+            padding-bottom: 10px;
+        }
+
+        .card p {
+            margin: 12px 0;
+            color: #444;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .applyButton {
+            width: 100%;
+            padding: 14px;
+            margin-top: 25px;
+            background: linear-gradient(to right, #2c3e8f, #1abc9c);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: opacity 0.2s;
+        }
+
+        .applyButton:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="left">
+        <img src="FTMS.jpeg" class="logo">
+        <h1>FTMS</h1>
+        <p>Field Training Management System</p>
+    </div>
+
+    <div class="right" id="main-view">
+        <h2>Student Dashboard</h2>
+        <label class="select-dept-label">Click on any department to view its available training company:</label>
+        
+        <div class="departments-grid-container">
+            <div class="dept-card" onclick="showCompanyDetails('Computer Engineering')">
+                <img src="https://cdn-icons-png.flaticon.com/512/900/900618.png" alt="Icon">
+                <h4>Computer Engineering</h4>
+            </div>
+            <div class="dept-card" onclick="showCompanyDetails('Network Engineering and Security')">
+                <img src="https://cdn-icons-png.flaticon.com/512/2885/2885449.png" alt="Icon">
+                <h4>Network Engineering & Security</h4>
+            </div>
+            <div class="dept-card" onclick="showCompanyDetails('Software Engineering')">
+                <img src="https://cdn-icons-png.flaticon.com/512/428/428001.png" alt="Icon">
+                <h4>Software Engineering</h4>
+            </div>
+            <div class="dept-card" onclick="showCompanyDetails('Computer Science')">
+                <img src="https://cdn-icons-png.flaticon.com/512/2885/2885417.png" alt="Icon">
+                <h4>Computer Science</h4>
+            </div>
+            <div class="dept-card" onclick="showCompanyDetails('Computer Information Systems')">
+                <img src="https://cdn-icons-png.flaticon.com/512/5225/5225439.png" alt="Icon">
+                <h4>Computer Information Systems</h4>
+            </div>
+            <div class="dept-card" onclick="showCompanyDetails('Data Science')">
+                <img src="https://cdn-icons-png.flaticon.com/512/6821/6821160.png" alt="Icon">
+                <h4>Data Science</h4>
+            </div>
+            <div class="dept-card" onclick="showCompanyDetails('Artificial Intelligence')">
+                <img src="https://cdn-icons-png.flaticon.com/512/2103/2103832.png" alt="Icon">
+                <h4>Artificial Intelligence</h4>
+            </div>
+            <div class="dept-card" onclick="showCompanyDetails('Cybersecurity')">
+                <img src="https://cdn-icons-png.flaticon.com/512/2092/2092663.png" alt="Icon">
+                <h4>Cybersecurity</h4>
+            </div>
+            <div class="dept-card" onclick="showCompanyDetails('Health Information Systems')">
+                <img src="https://cdn-icons-png.flaticon.com/512/3588/3588616.png" alt="Icon">
+                <h4>Health Information Systems</h4>
+            </div>
+            <div class="dept-card" onclick="showCompanyDetails('Robotics')">
+                <img src="https://cdn-icons-png.flaticon.com/512/2142/2142146.png" alt="Icon">
+                <h4>Robotics</h4>
+            </div>
+            <div class="dept-card" onclick="showCompanyDetails('Internet of Things')">
+                <img src="https://cdn-icons-png.flaticon.com/512/3050/3050525.png" alt="Icon">
+                <h4>Internet of Things</h4>
+            </div>
+            <div class="dept-card" onclick="showCompanyDetails('Game Design and Development')">
+                <img src="https://cdn-icons-png.flaticon.com/512/686/686589.png" alt="Icon">
+                <h4>Game Design & Development</h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="right" id="detail-view" style="display: none;">
+        <span class="back-btn" onclick="showMainDashboard()">← Back to Dashboard</span>
+        <h2 id="selected-dept-title">Specialization Title</h2>
+        <div id="company-card-placeholder"></div>
+    </div>
+
+</div>
+
+<script>
+window.onload = function() {
+    fetch("http://localhost:3000/internship-counts")
+    .then(res => res.json())
+    .then(data => {
+        const countsMap = {};
+        if (Array.isArray(data)) {
+            data.forEach(item => {
+                countsMap[item.category] = item.total;
+            });
+        }
+
+        const cards = document.querySelectorAll('.dept-card');
+        cards.forEach(card => {
+            const h4 = card.querySelector('h4');
+            const categoryName = h4.innerText.trim();
+            const count = countsMap[categoryName] || 0;
+            const text = count === 1 ? '1 Post Available' : count + ' Posts Available';
+            
+            const countDiv = document.createElement('div');
+            countDiv.className = 'post-count';
+            countDiv.innerText = text;
+            card.appendChild(countDiv);
+        });
+    })
+    .catch(err => {
+        console.error("Error fetching counts:", err);
+        const cards = document.querySelectorAll('.dept-card');
+        cards.forEach(card => {
+            const countDiv = document.createElement('div');
+            countDiv.className = 'post-count';
+            countDiv.innerText = '0 Posts Available';
+            card.appendChild(countDiv);
+        });
+    });
+};
+
+function showCompanyDetails(deptName) {
+    console.log("Selected category:", deptName);
+    
+    // Hide main view and show detail view
+    document.getElementById('main-view').style.display = 'none';
+    document.getElementById('detail-view').style.display = 'block';
+    
+    document.getElementById('selected-dept-title').innerText = deptName;
+    const placeholder = document.getElementById('company-card-placeholder');
+    placeholder.innerHTML = "<p>Loading internships...</p>";
+
+    // Fetch internships from backend for this specific category
+    fetch(`http://localhost:3000/internships/${encodeURIComponent(deptName)}`)
+        .then(res => res.json())
+        .then(data => {
+            console.log("Returned internships for", deptName, ":", data);
+            placeholder.innerHTML = "";
+
+            if (data && data.length > 0) {
+                data.forEach(intern => {
+                    const startDate = intern.start_date ? intern.start_date.split('T')[0] : 'N/A';
+                    const endDate = intern.end_date ? intern.end_date.split('T')[0] : 'N/A';
+                    
+                    placeholder.innerHTML += `
+                        <div class="card">
+                            <h3>${intern.title}</h3>
+                            <p><b>Company Name:</b> ${intern.company_name || 'N/A'}</p>
+                            <p><b>Description:</b> ${intern.description}</p>
+                            <p><b>Training Specialization:</b> ${intern.specialization}</p>
+                            <p><b>Training Duration:</b> ${intern.duration_months} Months</p>
+                            <p><b>Training Start Date:</b> ${startDate}</p>
+                            <p><b>Training End Date:</b> ${endDate}</p>
+                            <p><b>Location:</b> ${intern.location}</p>
+                            <p><b>Students Required:</b> ${intern.students_required || 'N/A'}</p>
+                            <button class="applyButton" onclick="applyNow('${intern.company_name || 'Company'}')">Apply Now</button>
+                        </div>
+                    `;
+                });
+            } else {
+                placeholder.innerHTML = `<p>No internships available for this category yet.</p>`;
+            }
+        })
+        .catch(err => {
+            console.error("Error fetching internships by category:", err);
+            placeholder.innerHTML = `<p>Error loading internships. Please try again later.</p>`;
+        });
+}
+
+function showMainDashboard() {
+    // إخفاء تفاصيل الشركة وإعادة إظهار لوحة التحكم الرئيسية للطلاب
+    document.getElementById('detail-view').style.display = 'none';
+    document.getElementById('main-view').style.display = 'block';
+}
+
+function applyNow(companyName) {
+    alert("Application to " + companyName + " Submitted Successfully!");
+}
+</script>
+
+</body>
+</html>
