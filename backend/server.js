@@ -7,11 +7,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+require('dotenv').config();
+
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "Mohammed.2003@",
-  database: "ftms"
+  host: process.env.DB_HOST || "localhost",
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASSWORD || "Mohammed.2003@",
+  database: process.env.DB_NAME || "ftms"
 });
 
 db.connect((err) => {
@@ -462,6 +464,10 @@ app.get("/internship-counts", (req, res) => {
   });
 });
 
-app.listen(3000, () => {
-  console.log("Server running on http://localhost:3000");
-});
+if (require.main === module) {
+  app.listen(3000, () => {
+    console.log("Server running on http://localhost:3000");
+  });
+}
+
+module.exports = { app, db };
