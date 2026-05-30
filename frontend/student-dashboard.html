@@ -15,10 +15,141 @@
             background-attachment: fixed;
         }
 
+        .top-bar {
+            width: 1200px;
+            margin: 20px auto 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #backLoginBtn {
+            background: white;
+            border: 1px solid #ccc;
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: #2c3e8f;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+        }
+
+        #backLoginBtn:hover {
+            background: #f4fcfb;
+            border-color: #1abc9c;
+        }
+
+        .profile-container {
+            position: relative;
+        }
+
+        #profileBtn {
+            background: white;
+            border: 1px solid #ccc;
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: #333;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+        }
+
+        #profileBtn img {
+            width: 20px;
+            margin-right: 10px;
+        }
+
+        #profileBtn .dropdown-arrow {
+            font-size: 10px;
+            margin-left: 10px;
+            color: #666;
+        }
+
+        #profileBtn:hover {
+            background: #f4fcfb;
+            border-color: #1abc9c;
+        }
+
+        .profile-menu {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            width: 250px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            z-index: 1000;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+
+        .profile-header {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .profile-info {
+            margin-bottom: 12px;
+        }
+
+        .profile-info .label {
+            display: block;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 2px;
+        }
+
+        .profile-info .value {
+            display: block;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .profile-divider {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 15px 0;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 0;
+            width: 100%;
+        }
+
+        .logout-btn img {
+            width: 18px;
+            margin-right: 10px;
+            filter: invert(36%) sepia(94%) saturate(7483%) hue-rotate(345deg) brightness(101%) contrast(96%);
+        }
+        
+        .logout-btn:hover {
+            text-decoration: underline;
+        }
+
         .container {
             width: 1200px;
             height: 750px;
-            margin: 20px auto;
+            margin: 0 auto 20px;
             display: flex;
             border-radius: 15px;
             overflow: hidden;
@@ -125,7 +256,6 @@
             font-weight: normal;
         }
 
-        /* تنسيق كرت عرض تفاصيل الشركة وزر العودة */
         .back-btn {
             display: inline-block;
             margin-bottom: 20px;
@@ -188,6 +318,35 @@
 
 <body>
 
+<div class="top-bar">
+    <button id="backLoginBtn" onclick="window.location.href='login.html'">
+        <span style="margin-right:8px;">←</span> Back to Login
+    </button>
+    <div class="profile-container">
+        <button id="profileBtn" onclick="toggleProfileMenu()">
+            <img src="https://cdn-icons-png.flaticon.com/512/1077/1077114.png" alt="User">
+            My Profile
+            <span class="dropdown-arrow">▼</span>
+        </button>
+        <div id="profileMenu" class="profile-menu">
+            <div class="profile-header">My Profile</div>
+            <div class="profile-info">
+                <span class="label">Student Name</span>
+                <span id="studentNameDisplay" class="value">John Doe</span>
+            </div>
+            <div class="profile-info">
+                <span class="label">Major</span>
+                <span id="studentMajorDisplay" class="value">Computer Engineering</span>
+            </div>
+            <hr class="profile-divider">
+            <button id="logoutBtn" class="logout-btn" onclick="logout()">
+                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828479.png" alt="Logout">
+                Logout
+            </button>
+        </div>
+    </div>
+</div>
+
 <div class="container">
 
     <div class="left">
@@ -205,7 +364,7 @@
                 <img src="https://cdn-icons-png.flaticon.com/512/900/900618.png" alt="Icon">
                 <h4>Computer Engineering</h4>
             </div>
-            <div class="dept-card" onclick="showCompanyDetails('Network Engineering and Security')">
+            <div class="dept-card" onclick="showCompanyDetails('Network Engineering & Security')">
                 <img src="https://cdn-icons-png.flaticon.com/512/2885/2885449.png" alt="Icon">
                 <h4>Network Engineering & Security</h4>
             </div>
@@ -245,7 +404,7 @@
                 <img src="https://cdn-icons-png.flaticon.com/512/3050/3050525.png" alt="Icon">
                 <h4>Internet of Things</h4>
             </div>
-            <div class="dept-card" onclick="showCompanyDetails('Game Design and Development')">
+            <div class="dept-card" onclick="showCompanyDetails('Game Design & Development')">
                 <img src="https://cdn-icons-png.flaticon.com/512/686/686589.png" alt="Icon">
                 <h4>Game Design & Development</h4>
             </div>
@@ -261,7 +420,30 @@
 </div>
 
 <script>
+function toggleProfileMenu() {
+    const menu = document.getElementById('profileMenu');
+    menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+}
+
+window.onclick = function(event) {
+    if (!event.target.closest('.profile-container')) {
+        const menu = document.getElementById('profileMenu');
+        if (menu && menu.style.display === 'block') {
+            menu.style.display = 'none';
+        }
+    }
+}
+
 window.onload = function() {
+    const userDataStr = sessionStorage.getItem("user") || localStorage.getItem("user");
+    if (userDataStr) {
+        try {
+            const userObj = JSON.parse(userDataStr);
+            document.getElementById('studentNameDisplay').innerText = userObj.full_name || 'Student Name';
+            document.getElementById('studentMajorDisplay').innerText = userObj.department || userObj.dept || userObj.major || 'Computer Engineering';
+        } catch(e) { console.error(e); }
+    }
+
     fetch("http://localhost:3000/internship-counts")
     .then(res => res.json())
     .then(data => {
@@ -300,7 +482,6 @@ window.onload = function() {
 function showCompanyDetails(deptName) {
     console.log("Selected category:", deptName);
     
-    // Hide main view and show detail view
     document.getElementById('main-view').style.display = 'none';
     document.getElementById('detail-view').style.display = 'block';
     
@@ -308,7 +489,6 @@ function showCompanyDetails(deptName) {
     const placeholder = document.getElementById('company-card-placeholder');
     placeholder.innerHTML = "<p>Loading internships...</p>";
 
-    // Fetch internships from backend for this specific category
     fetch(`http://localhost:3000/internships/${encodeURIComponent(deptName)}`)
         .then(res => res.json())
         .then(data => {
@@ -346,7 +526,6 @@ function showCompanyDetails(deptName) {
 }
 
 function showMainDashboard() {
-    // إخفاء تفاصيل الشركة وإعادة إظهار لوحة التحكم الرئيسية للطلاب
     document.getElementById('detail-view').style.display = 'none';
     document.getElementById('main-view').style.display = 'block';
 }

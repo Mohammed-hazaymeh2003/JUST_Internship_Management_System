@@ -1,9 +1,6 @@
-// auth.js
 (function() {
     const path = window.location.pathname.toLowerCase();
     
-    // Do NOT run auth middleware if we are on the login page!
-    // The login page handles itself and should never auto-redirect.
     if (path.includes("login.html")) {
         return;
     }
